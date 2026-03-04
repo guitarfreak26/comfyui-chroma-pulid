@@ -37,7 +37,7 @@ RUN sed -i 's/providers=\[provider.*ExecutionProvider.*\]//' \
 # Download InsightFace antelopev2 model (needed by PuLID face detection)
 RUN mkdir -p /comfyui/models/insightface/models/antelopev2 && \
     wget -O /tmp/antelopev2.zip "https://huggingface.co/MonsterMMORPG/tools/resolve/main/antelopev2.zip" && \
-    unzip /tmp/antelopev2.zip -d /comfyui/models/insightface/models/antelopev2/ && \
+    python3 -c "import zipfile; zipfile.ZipFile('/tmp/antelopev2.zip').extractall('/comfyui/models/insightface/models/antelopev2/')" && \
     rm /tmp/antelopev2.zip
 
 # Download PuLID model into the image (custom path not mapped from volume)
