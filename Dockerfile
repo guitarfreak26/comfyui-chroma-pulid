@@ -34,6 +34,22 @@ RUN pip install --force-reinstall insightface onnxruntime-gpu onnxruntime && \
 COPY patch_pulid.py /tmp/patch_pulid.py
 RUN python3 /tmp/patch_pulid.py && rm /tmp/patch_pulid.py
 
+# Verify the patch worked and the node can be imported
+RUN cd /comfyui && python3 -c "
+import sys
+sys.path.insert(0, '/comfyui')
+sys.path.insert(0, '/comfyui/custom_nodes')
+try:
+    from ComfyUI_PuLID_Flux_Chroma import pulidflux
+    print('✅ PuLID module imports OK')
+    print('✅ PulidFluxInsightFaceLoader class:', pulidflux.PulidFluxInsightFaceLoader)
+except Exception as e:
+    print('❌ PuLID import failed:', e)
+    import traceback
+    traceback.print_exc()
+    sys.exit(1)
+"
+
 # Download InsightFace antelopev2 model (needed by PuLID face detection)
 # Zip contains antelopev2/ subfolder, so extract to parent dir
 RUN mkdir -p /comfyui/models/insightface/models && \
