@@ -26,7 +26,7 @@ RUN cd /comfyui/custom_nodes && \
     done
 
 # Install insightface + onnxruntime (needed by PuLID)
-RUN pip install insightface onnxruntime-gpu
+RUN pip install insightface==0.7.3 onnxruntime-gpu
 
 # Download PuLID model into the image (custom path not mapped from volume)
 RUN mkdir -p /comfyui/models/pulid && \
