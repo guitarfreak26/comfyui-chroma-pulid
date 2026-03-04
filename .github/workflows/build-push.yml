@@ -30,5 +30,6 @@ jobs:
           tags: |
             alarastudios/comfyui-chroma-pulid:latest
             alarastudios/comfyui-chroma-pulid:v2
+            alarastudios/comfyui-chroma-pulid:v3
           cache-from: type=gha
           cache-to: type=gha,mode=max

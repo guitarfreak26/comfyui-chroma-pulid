@@ -27,3 +27,8 @@ RUN cd /comfyui/custom_nodes && \
 
 # Install insightface + onnxruntime (needed by PuLID)
 RUN pip install insightface onnxruntime-gpu
+
+# Download PuLID model into the image (custom path not mapped from volume)
+RUN mkdir -p /comfyui/models/pulid && \
+    wget -O /comfyui/models/pulid/pulid_flux_v0.9.0.safetensors \
+    "https://huggingface.co/guozinan/PuLID/resolve/main/pulid_flux_v0.9.0.safetensors"
