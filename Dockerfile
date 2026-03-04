@@ -3,37 +3,31 @@
 FROM runpod/worker-comfyui:5.1.0-base
 
 # ============================================
-# Custom Nodes - Registry installs
+# Custom Nodes - ALL via git clone (registry is unreliable)
 # ============================================
-RUN comfy-node-install comfyui-easy-use
-RUN comfy-node-install comfyui-kjnodes
-RUN comfy-node-install comfyui_controlnet_aux
-RUN comfy-node-install comfyui_essentials
-RUN comfy-node-install comfyui_tinyterranodes
-RUN comfy-node-install comfyui-multigpu
-
-# ============================================
-# Custom Nodes - Git installs (not in registry)
-# ============================================
-# PuLID for Flux/Chroma (PaoloC68 fork with Chroma support)
 RUN cd /comfyui/custom_nodes && \
     git clone https://github.com/PaoloC68/ComfyUI-PuLID-Flux-Chroma.git && \
-    cd ComfyUI-PuLID-Flux-Chroma && pip install -r requirements.txt 2>/dev/null || true
-
-# IPAdapter for Flux (XLabs)
-RUN cd /comfyui/custom_nodes && \
     git clone https://github.com/XLabs-AI/x-flux-comfyui.git && \
-    cd x-flux-comfyui && pip install -r requirements.txt 2>/dev/null || true
-
-# Advanced Vision (SigLIP2 loader)
-RUN cd /comfyui/custom_nodes && \
     git clone https://github.com/ostris/ComfyUI-Advanced-Vision.git && \
-    cd ComfyUI-Advanced-Vision && pip install -r requirements.txt 2>/dev/null || true
-
-# IPAdapter Plus V2 (PrepImageForClipVisionV2)
-RUN cd /comfyui/custom_nodes && \
     git clone https://github.com/cubiq/ComfyUI_IPAdapter_plus.git && \
-    cd ComfyUI_IPAdapter_plus && pip install -r requirements.txt 2>/dev/null || true
+    git clone https://github.com/jags111/efficiency-nodes-comfyui.git && \
+    git clone https://github.com/kijai/ComfyUI-KJNodes.git && \
+    git clone https://github.com/Fannovel16/comfyui_controlnet_aux.git && \
+    git clone https://github.com/cubiq/ComfyUI_essentials.git && \
+    git clone https://github.com/TinyTerra/ComfyUI_tinyterranodes.git && \
+    git clone https://github.com/neuratech-ai/ComfyUI-MultiGPU.git && \
+    git clone https://github.com/ltdrdata/ComfyUI-Manager.git
+
+# Install all requirements
+RUN cd /comfyui/custom_nodes && \
+    for dir in */; do \
+      if [ -f "$dir/requirements.txt" ]; then \
+        pip install -r "$dir/requirements.txt" 2>/dev/null || true; \
+      fi; \
+    done
+
+# Install insightface + onnxruntime (needed by PuLID)
+RUN pip install insightface onnxruntime-gpu
 
 # ============================================
 # Models - Chroma GGUF Q8
