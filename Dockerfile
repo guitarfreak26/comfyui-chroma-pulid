@@ -35,9 +35,10 @@ RUN sed -i 's/providers=\[provider.*ExecutionProvider.*\]//' \
     /comfyui/custom_nodes/ComfyUI-PuLID-Flux-Chroma/pulidflux.py
 
 # Download InsightFace antelopev2 model (needed by PuLID face detection)
-RUN mkdir -p /comfyui/models/insightface/models/antelopev2 && \
+# Zip contains antelopev2/ subfolder, so extract to parent dir
+RUN mkdir -p /comfyui/models/insightface/models && \
     wget -O /tmp/antelopev2.zip "https://huggingface.co/MonsterMMORPG/tools/resolve/main/antelopev2.zip" && \
-    python3 -c "import zipfile; zipfile.ZipFile('/tmp/antelopev2.zip').extractall('/comfyui/models/insightface/models/antelopev2/')" && \
+    python3 -c "import zipfile; zipfile.ZipFile('/tmp/antelopev2.zip').extractall('/comfyui/models/insightface/models/')" && \
     rm /tmp/antelopev2.zip
 
 # Download PuLID model into the image (custom path not mapped from volume)
