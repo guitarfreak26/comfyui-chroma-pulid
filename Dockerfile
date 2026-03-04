@@ -34,14 +34,6 @@ RUN pip install --force-reinstall insightface onnxruntime-gpu onnxruntime && \
 COPY patch_pulid.py /tmp/patch_pulid.py
 RUN python3 /tmp/patch_pulid.py && rm /tmp/patch_pulid.py
 
-# Verify the patch was applied and print the patched method
-RUN grep -A5 "def load_insightface" /comfyui/custom_nodes/ComfyUI-PuLID-Flux-Chroma/pulidflux.py && \
-    echo "✅ Patch verified" && \
-    ls -la /comfyui/models/insightface/models/antelopev2/ && \
-    echo "✅ AntelopeV2 models verified" && \
-    ls -la /comfyui/models/pulid/ && \
-    echo "✅ PuLID model verified"
-
 # Download InsightFace antelopev2 model (needed by PuLID face detection)
 # Zip contains antelopev2/ subfolder, so extract to parent dir
 RUN mkdir -p /comfyui/models/insightface/models && \
@@ -53,3 +45,11 @@ RUN mkdir -p /comfyui/models/insightface/models && \
 RUN mkdir -p /comfyui/models/pulid && \
     wget -O /comfyui/models/pulid/pulid_flux_v0.9.0.safetensors \
     "https://huggingface.co/guozinan/PuLID/resolve/main/pulid_flux_v0.9.0.safetensors"
+
+# Verify everything is in place
+RUN grep -A5 "def load_insightface" /comfyui/custom_nodes/ComfyUI-PuLID-Flux-Chroma/pulidflux.py && \
+    echo "✅ Patch verified" && \
+    ls -la /comfyui/models/insightface/models/antelopev2/ && \
+    echo "✅ AntelopeV2 models verified" && \
+    ls -la /comfyui/models/pulid/ && \
+    echo "✅ PuLID model verified"
