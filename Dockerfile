@@ -26,7 +26,8 @@ RUN cd /comfyui/custom_nodes && \
     done
 
 # Install old insightface version that works with providers kwarg (0.6.2)
-RUN pip install --force-reinstall insightface==0.6.2 onnxruntime-gpu==1.15.1 && \
+RUN pip install Cython && \
+    pip install --force-reinstall insightface==0.6.2 onnxruntime-gpu==1.15.1 && \
     python3 -c "from insightface.app import FaceAnalysis; print('insightface 0.6.2 OK')" && \
     python3 -c "import onnxruntime; print('onnxruntime 1.15.1 OK, providers:', onnxruntime.get_available_providers())"
 
