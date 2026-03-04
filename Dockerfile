@@ -14,7 +14,8 @@ RUN cd /comfyui/custom_nodes && \
     git clone https://github.com/Fannovel16/comfyui_controlnet_aux.git && \
     git clone https://github.com/cubiq/ComfyUI_essentials.git && \
     git clone https://github.com/TinyTerra/ComfyUI_tinyterranodes.git && \
-    git clone https://github.com/neuratech-ai/ComfyUI-MultiGPU.git
+    git clone https://github.com/neuratech-ai/ComfyUI-MultiGPU.git && \
+    git clone https://github.com/city96/ComfyUI-GGUF.git
 
 # Install all requirements
 RUN cd /comfyui/custom_nodes && \
