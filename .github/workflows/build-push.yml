@@ -27,6 +27,8 @@ jobs:
         with:
           context: .
           push: true
-          tags: alarastudios/comfyui-chroma-pulid:latest
+          tags: |
+            alarastudios/comfyui-chroma-pulid:latest
+            alarastudios/comfyui-chroma-pulid:v2
           cache-from: type=gha
           cache-to: type=gha,mode=max
