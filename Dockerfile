@@ -26,7 +26,14 @@ RUN cd /comfyui/custom_nodes && \
     done
 
 # Install insightface + onnxruntime (needed by PuLID)
-RUN pip install insightface==0.7.3 onnxruntime-gpu
+# Install insightface + onnxruntime
+RUN pip install insightface onnxruntime-gpu
+
+# Patch PuLID: remove 'providers' kwarg from FaceAnalysis (incompatible with newer insightface)
+RUN sed -i 's/providers=\[provider.*ExecutionProvider.*\]//' \
+    /comfyui/custom_nodes/ComfyUI-PuLID-Flux-Chroma/pulidflux.py && \
+    sed -i 's/root=INSIGHTFACE_DIR, )/root=INSIGHTFACE_DIR)/' \
+    /comfyui/custom_nodes/ComfyUI-PuLID-Flux-Chroma/pulidflux.py
 
 # Download PuLID model into the image (custom path not mapped from volume)
 RUN mkdir -p /comfyui/models/pulid && \
