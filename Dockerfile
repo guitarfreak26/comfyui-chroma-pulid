@@ -32,6 +32,11 @@ RUN pip install Cython && \
     python3 -c "from insightface.app import FaceAnalysis; print('insightface 0.6.2 OK')" && \
     python3 -c "import onnxruntime; print('onnxruntime 1.17.0 OK, providers:', onnxruntime.get_available_providers())"
 
+# Fix: Missing C++ compiler (needed for building insightface extensions)
+RUN apt-get update && \
+    apt-get install -y build-essential && \
+    apt-get clean && rm -rf /var/lib/apt/lists/*
+
 # No patch needed - old insightface accepts providers in __init__
 
 # Download InsightFace antelopev2 model (needed by PuLID face detection)
