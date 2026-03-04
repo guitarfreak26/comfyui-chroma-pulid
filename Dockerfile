@@ -26,7 +26,6 @@ RUN cd /comfyui/custom_nodes && \
     done
 
 # Install insightface + onnxruntime (needed by PuLID)
-# Install insightface + onnxruntime
 RUN pip install insightface onnxruntime-gpu
 
 # Patch PuLID: remove 'providers' kwarg from FaceAnalysis (incompatible with newer insightface)
@@ -34,6 +33,12 @@ RUN sed -i 's/providers=\[provider.*ExecutionProvider.*\]//' \
     /comfyui/custom_nodes/ComfyUI-PuLID-Flux-Chroma/pulidflux.py && \
     sed -i 's/root=INSIGHTFACE_DIR, )/root=INSIGHTFACE_DIR)/' \
     /comfyui/custom_nodes/ComfyUI-PuLID-Flux-Chroma/pulidflux.py
+
+# Download InsightFace antelopev2 model (needed by PuLID face detection)
+RUN mkdir -p /comfyui/models/insightface/models/antelopev2 && \
+    wget -O /tmp/antelopev2.zip "https://huggingface.co/MonsterMMORPG/tools/resolve/main/antelopev2.zip" && \
+    unzip /tmp/antelopev2.zip -d /comfyui/models/insightface/models/antelopev2/ && \
+    rm /tmp/antelopev2.zip
 
 # Download PuLID model into the image (custom path not mapped from volume)
 RUN mkdir -p /comfyui/models/pulid && \
