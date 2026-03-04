@@ -35,7 +35,7 @@ COPY patch_pulid.py /tmp/patch_pulid.py
 RUN python3 /tmp/patch_pulid.py && rm /tmp/patch_pulid.py
 
 # Verify the patch worked and the node can be imported
-RUN cd /comfyui && python3 -c "
+RUN cd /comfyui && python3 << 'PYEOF'
 import sys
 sys.path.insert(0, '/comfyui')
 sys.path.insert(0, '/comfyui/custom_nodes')
@@ -48,7 +48,7 @@ except Exception as e:
     import traceback
     traceback.print_exc()
     sys.exit(1)
-"
+PYEOF
 
 # Download InsightFace antelopev2 model (needed by PuLID face detection)
 # Zip contains antelopev2/ subfolder, so extract to parent dir
