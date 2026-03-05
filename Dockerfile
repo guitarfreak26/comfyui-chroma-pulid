@@ -38,16 +38,7 @@ RUN pip install Cython numpy && \
     python3 -c "import onnxruntime; print('onnxruntime OK, providers:', onnxruntime.get_available_providers())"
 
 # Check what version of insightface was installed and if it accepts providers
-RUN python3 -c "
-import insightface
-print(f'insightface version: {insightface.__version__}')
-import inspect
-from insightface.app import FaceAnalysis
-sig = inspect.signature(FaceAnalysis.__init__)
-print(f'FaceAnalysis.__init__ params: {list(sig.parameters.keys())}')
-sig2 = inspect.signature(FaceAnalysis.prepare)
-print(f'FaceAnalysis.prepare params: {list(sig2.parameters.keys())}')
-"
+RUN python3 -c "import insightface; print(f'insightface version: {insightface.__version__}'); import inspect; from insightface.app import FaceAnalysis; sig = inspect.signature(FaceAnalysis.__init__); print(f'FaceAnalysis.__init__ params: {list(sig.parameters.keys())}'); sig2 = inspect.signature(FaceAnalysis.prepare); print(f'FaceAnalysis.prepare params: {list(sig2.parameters.keys())}')"
 
 # Patch PuLID if needed — make providers work regardless of insightface version
 COPY patch_pulid.py /tmp/patch_pulid.py
