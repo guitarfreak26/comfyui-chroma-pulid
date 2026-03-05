@@ -7,6 +7,9 @@ RUN apt-get update && \
     apt-get install -y build-essential python3-dev && \
     apt-get clean && rm -rf /var/lib/apt/lists/*
 
+# Update ComfyUI to latest (base image too old, doesn't support CLIPLoader type 'chroma')
+RUN cd /comfyui && git pull origin master
+
 # ============================================
 # Custom Nodes via git clone
 # ============================================
