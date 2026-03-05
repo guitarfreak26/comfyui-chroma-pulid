@@ -14,7 +14,7 @@ RUN cd /comfyui/custom_nodes && \
     git clone https://github.com/PaoloC68/ComfyUI-PuLID-Flux-Chroma.git && \
     git clone https://github.com/XLabs-AI/x-flux-comfyui.git && \
     git clone https://github.com/ostris/ComfyUI-Advanced-Vision.git && \
-    git clone https://github.com/cubiq/ComfyUI_IPAdapter_plus.git && \
+    git clone https://github.com/chflame163/ComfyUI_IPAdapter_plus_V2.git && \
     git clone https://github.com/kijai/ComfyUI-KJNodes.git && \
     git clone https://github.com/Fannovel16/comfyui_controlnet_aux.git && \
     git clone https://github.com/cubiq/ComfyUI_essentials.git && \
