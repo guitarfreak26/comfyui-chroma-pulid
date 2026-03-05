@@ -30,10 +30,10 @@ RUN cd /comfyui/custom_nodes && \
       fi; \
     done
 
-# Install insightface with Cython (needs build-essential for C++ extensions)
-# Using latest insightface + patching PuLID to work without providers kwarg
+# Install insightface 0.7.3 (latest, needs compilation — build-essential installed above)
+# Force version to avoid getting ancient 0.2.1 from base image cache
 RUN pip install Cython numpy && \
-    pip install insightface onnxruntime-gpu && \
+    pip install --force-reinstall --no-cache-dir insightface==0.7.3 onnxruntime-gpu && \
     python3 -c "from insightface.app import FaceAnalysis; print('insightface OK')" && \
     python3 -c "import onnxruntime; print('onnxruntime OK, providers:', onnxruntime.get_available_providers())"
 

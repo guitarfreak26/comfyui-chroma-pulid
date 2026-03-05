@@ -41,7 +41,7 @@ else:
             print(f"[PuLID] Model files: {os.listdir(model_dir)}")
         else:
             print(f"[PuLID] WARNING: dir missing: {model_dir}")
-        model = FaceAnalysis(name="antelopev2", root=INSIGHTFACE_DIR, allowed_modules=['detection', 'recognition'])
+        model = FaceAnalysis(name="antelopev2", root=INSIGHTFACE_DIR)
         model.prepare(ctx_id=0, det_size=(640, 640))
         print("[PuLID] InsightFace loaded successfully")
         return (model,)'''
