@@ -2,6 +2,11 @@
 # Custom nodes only — models live on Network Volume
 FROM runpod/worker-comfyui:5.1.0-base
 
+# Install build tools first (needed for insightface C++ extensions)
+RUN apt-get update && \
+    apt-get install -y build-essential && \
+    apt-get clean && rm -rf /var/lib/apt/lists/*
+
 # ============================================
 # Custom Nodes via git clone
 # ============================================
@@ -25,19 +30,28 @@ RUN cd /comfyui/custom_nodes && \
       fi; \
     done
 
-# Install old insightface version that works with providers kwarg (0.6.2)
-# Note: onnxruntime-gpu 1.15.1 no longer available, using 1.17.0
-RUN pip install Cython && \
-    pip install --force-reinstall insightface==0.6.2 onnxruntime-gpu==1.17.0 && \
-    python3 -c "from insightface.app import FaceAnalysis; print('insightface 0.6.2 OK')" && \
-    python3 -c "import onnxruntime; print('onnxruntime 1.17.0 OK, providers:', onnxruntime.get_available_providers())"
+# Install insightface with Cython (needs build-essential for C++ extensions)
+# Using latest insightface + patching PuLID to work without providers kwarg
+RUN pip install Cython numpy && \
+    pip install insightface onnxruntime-gpu && \
+    python3 -c "from insightface.app import FaceAnalysis; print('insightface OK')" && \
+    python3 -c "import onnxruntime; print('onnxruntime OK, providers:', onnxruntime.get_available_providers())"
 
-# Fix: Missing C++ compiler (needed for building insightface extensions)
-RUN apt-get update && \
-    apt-get install -y build-essential && \
-    apt-get clean && rm -rf /var/lib/apt/lists/*
+# Check what version of insightface was installed and if it accepts providers
+RUN python3 -c "
+import insightface
+print(f'insightface version: {insightface.__version__}')
+import inspect
+from insightface.app import FaceAnalysis
+sig = inspect.signature(FaceAnalysis.__init__)
+print(f'FaceAnalysis.__init__ params: {list(sig.parameters.keys())}')
+sig2 = inspect.signature(FaceAnalysis.prepare)
+print(f'FaceAnalysis.prepare params: {list(sig2.parameters.keys())}')
+"
 
-# No patch needed - old insightface accepts providers in __init__
+# Patch PuLID if needed — make providers work regardless of insightface version
+COPY patch_pulid.py /tmp/patch_pulid.py
+RUN python3 /tmp/patch_pulid.py && rm /tmp/patch_pulid.py
 
 # Download InsightFace antelopev2 model (needed by PuLID face detection)
 # Zip contains antelopev2/ subfolder, so extract to parent dir
@@ -52,7 +66,7 @@ RUN mkdir -p /comfyui/models/pulid && \
     "https://huggingface.co/guozinan/PuLID/resolve/main/pulid_flux_v0.9.0.safetensors"
 
 # Verify everything is in place
-RUN grep -A5 "def load_insightface" /comfyui/custom_nodes/ComfyUI-PuLID-Flux-Chroma/pulidflux.py && \
+RUN grep -A10 "def load_insightface" /comfyui/custom_nodes/ComfyUI-PuLID-Flux-Chroma/pulidflux.py && \
     echo "✅ Patch verified" && \
     ls -la /comfyui/models/insightface/models/antelopev2/ && \
     echo "✅ AntelopeV2 models verified" && \
