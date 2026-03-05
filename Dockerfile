@@ -56,6 +56,12 @@ RUN mkdir -p /comfyui/models/pulid && \
     wget -O /comfyui/models/pulid/pulid_flux_v0.9.0.safetensors \
     "https://huggingface.co/guozinan/PuLID/resolve/main/pulid_flux_v0.9.0.safetensors"
 
+# Custom start script: symlinks network volume models before launching ComfyUI
+# x-flux-comfyui looks in /comfyui/models/xlabs/ipadapters/
+# AdvancedVisionLoader looks in /comfyui/models/clip_vision/
+COPY start_custom.sh /start.sh
+RUN chmod +x /start.sh
+
 # Verify everything is in place
 RUN grep -A10 "def load_insightface" /comfyui/custom_nodes/ComfyUI-PuLID-Flux-Chroma/pulidflux.py && \
     echo "✅ Patch verified" && \
