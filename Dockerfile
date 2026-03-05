@@ -4,7 +4,7 @@ FROM runpod/worker-comfyui:5.1.0-base
 
 # Install build tools first (needed for insightface C++ extensions)
 RUN apt-get update && \
-    apt-get install -y build-essential && \
+    apt-get install -y build-essential python3-dev && \
     apt-get clean && rm -rf /var/lib/apt/lists/*
 
 # ============================================
