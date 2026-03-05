@@ -1,14 +1,11 @@
 # alarastudios/comfyui-chroma-pulid
 # Custom nodes only — models live on Network Volume
-FROM runpod/worker-comfyui:5.1.0-base
+FROM runpod/worker-comfyui:5.4.0-base
 
 # Install build tools first (needed for insightface C++ extensions)
 RUN apt-get update && \
     apt-get install -y build-essential python3-dev && \
     apt-get clean && rm -rf /var/lib/apt/lists/*
-
-# Update ComfyUI to latest (base image too old, doesn't support CLIPLoader type 'chroma')
-RUN cd /comfyui && git pull origin master
 
 # ============================================
 # Custom Nodes via git clone
